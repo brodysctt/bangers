@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400&display=swap");
 
 :root {
-  --color-bg: #eef0f1;
+  --color-bg: #08090a;
   --color-text: #08090a;
   --color-blue: #3b49df;
   --color-red: #df3b3b;
@@ -15,7 +15,7 @@ body {
   font-family: "Noto Sans", sans-serif;
   background-color: var(--color-bg);
   color: var(--color-text);
-  margin-top: 50px;
+  height: 100%;
 }
 
 main {
@@ -70,7 +70,7 @@ code {
 .navbar {
   height: 70px;
   width: 100%;
-  background: white;
+  background: #0a0a0c;
   color: var(--colors-text);
   position: fixed;
   top: 0;
@@ -105,9 +105,9 @@ code {
 
 .btn,
 button {
-  background-color: var(--color-gray);
+  background-color: var(--color-text);
   border: none;
-  color: var(--color-text);
+  color: var(--color-bg);
   padding: 1rem 2rem;
   display: flex;
   align-items: center;
@@ -164,8 +164,8 @@ button.btn-google {
 }
 
 button.btn-logo {
-  background-color: var(--color-text);
-  color: white;
+  background-color: white;
+  color: black;
   text-transform: uppercase;
   font-size: 1.5rem;
   padding: 0.5rem 1rem;
