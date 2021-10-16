@@ -1,7 +1,22 @@
 import { GetServerSideProps } from "next";
-import { setSpotifyTokens } from "../utils/setSpotifyAccessTokens";
-const Home = ({}) => {
-  return <div>HOME</div>;
+import React from "react";
+import Navbar from "../components/Navbar";
+import {
+  createCookie,
+  getSpotifyTokens,
+} from "../spotify/setSpotifyAccessTokens";
+import { spotify } from "../spotify/spotify";
+import { Box } from "rebass";
+const Home = ({ profile }) => {
+  console.log(profile);
+  return (
+    <>
+      <Navbar profile={profile} />
+      <Box sx={{ paddingX: "10%" }}>
+        <h1>{`Welcome ${profile.display_name}`}</h1>
+      </Box>
+    </>
+  );
 };
 
 export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
@@ -12,11 +27,18 @@ export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
     SPOTIFY_REDIRECT_URL: process.env.SPOTIFY_REDIRECT_URL,
   };
 
-  await setSpotifyTokens(spotifyParams, context);
-
-  return {
-    props: {},
-  };
+  try {
+    const tokens = await getSpotifyTokens(spotifyParams);
+    const profile = await spotify.getUserProfile(tokens.accessToken);
+    await createCookie(tokens, context);
+    return {
+      props: { profile },
+    };
+  } catch (e) {
+    return {
+      props: {},
+    };
+  }
 };
 
 export default Home;
