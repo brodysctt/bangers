@@ -7,8 +7,9 @@ import {
 } from "../spotify/setSpotifyAccessTokens";
 import { spotify } from "../spotify/spotify";
 import { Box, Text } from "rebass";
+import { TrackList } from "../components/Track-List";
+import theme from "../styles/theme";
 const Home = ({ profile, topTunes }) => {
-  // console.log(profile);
   console.log(topTunes);
   return (
     <>
@@ -17,19 +18,14 @@ const Home = ({ profile, topTunes }) => {
         sx={{
           paddingX: "10%",
           marginTop: "65px",
-          paddingTop: "30px",
+          paddingTop: "80px",
           background: "linear-gradient(#181857 , #0A0A0C 30%)",
         }}
       >
         <Text
-          sx={{ color: "#DCDCDF" }}
-        >{`Welcome ${profile.display_name}`}</Text>
-        {topTunes.items.map((song) => (
-          <Text
-            sx={{ color: "#DCDCDF", marginBottom: "10px" }}
-            key={song.id}
-          >{`${song.name} : ${song.artists[0].name}`}</Text>
-        ))}
+          sx={{ ...theme.textStyle.main, fontSize: 40, marginBottom: "40px" }}
+        >{`${profile.display_name}'s Top Songs`}</Text>
+        <TrackList songs={topTunes.items} />
       </Box>
     </>
   );

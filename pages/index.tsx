@@ -15,7 +15,14 @@ export default function Home() {
         width: "100%",
       }}
     >
-      <Text sx={{ fontSize: 60, color: "white", textAlign: "center" }}>
+      <Text
+        sx={{
+          fontSize: 60,
+          color: "white",
+          textAlign: "center",
+          fontFamily: "Poppins",
+        }}
+      >
         🤘 Bangers Only 🤘
       </Text>
 
@@ -23,11 +30,20 @@ export default function Home() {
         Get started by logging in
       </Text>
       <Image
-        sx={{ alignSelf: "center" }}
+        sx={{
+          alignSelf: "center",
+          width: "100px",
+          height: "100px",
+          marginTop: "20px",
+          ":hover": {
+            height: "110px",
+            width: "110px",
+            cursor: "pointer",
+            marginTop: "10px",
+          },
+        }}
         src="/spotify-logo.png"
         alt="Spotify Logo"
-        width={"100px"}
-        height={"100px"}
         onClick={() => Router.push("/login")}
       />
     </Box>

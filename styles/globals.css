@@ -76,7 +76,6 @@ code {
   top: 0;
   padding: 0 10vw;
   font-weight: bold;
-  border-bottom: 1px solid var(--color-gray);
   z-index: 99;
 }
 
