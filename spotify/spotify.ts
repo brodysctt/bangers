@@ -1,4 +1,5 @@
 import axios from "axios";
+import qs from "qs";
 
 const SPOTIFY_API = "https://api.spotify.com/v1/";
 const getHeaders = (accessToken: string) => ({
@@ -39,7 +40,28 @@ const getTopMusic = async (
   return res.data;
 };
 
+const playTrack = async ({
+  accessToken,
+  uri,
+}: {
+  accessToken: string;
+  uri: string;
+}) => {
+  debug();
+  try {
+    const res = await axios.put(
+      SPOTIFY_API + `me/player/play`,
+      { uris: [uri] },
+      getHeaders(accessToken)
+    );
+    return res.data;
+  } catch (e) {
+    return e;
+  }
+};
+
 export const spotify = {
   getUserProfile,
   getTopMusic,
+  playTrack,
 };

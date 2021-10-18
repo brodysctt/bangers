@@ -1,11 +1,14 @@
 import React from "react";
 import { Box, Image, Text } from "rebass";
+import { spotify } from "../spotify/spotify";
 import theme from "../styles/theme";
+import Cookies from "js-cookie";
 
 export const TrackListItem: React.FC<{ song: any; sx?: any }> = ({
   song,
   sx,
 }) => {
+  const accessToken = Cookies.get("spotifyAccess");
   return (
     <Box sx={{ display: "flex", ...sx }}>
       <Box
@@ -20,7 +23,30 @@ export const TrackListItem: React.FC<{ song: any; sx?: any }> = ({
           src={song.album.images[0].url}
           sx={{ height: "50px", marginRight: "20px" }}
         />
-        <Text sx={{ ...theme.textStyle.main, fontSize: 15 }}>{song.name}</Text>
+        <Text
+          sx={{
+            ...theme.textStyle.main,
+            fontSize: 15,
+            ":hover": { fontSize: 17, cursor: "pointer" },
+          }}
+          onClick={
+            async () => {
+              const play = await spotify.playTrack({
+                accessToken,
+                uri: song.uri,
+              });
+              console.log(play);
+            }
+            //TO-DO: Add logic to open web player if not a premium spotify user
+            // window.open(
+            //   song.external_urls.spotify,
+            //   "_blank",
+            //   "noopener,noreferrer"
+            // )
+          }
+        >
+          {song.name}
+        </Text>
       </Box>
       <Box
         sx={{
@@ -40,6 +66,7 @@ export const TrackListItem: React.FC<{ song: any; sx?: any }> = ({
 };
 
 export const TrackList = ({ songs }) => {
+  console.log(songs);
   return (
     <Box sx={{ width: "1000px", display: "flex", flexDirection: "column" }}>
       <Box

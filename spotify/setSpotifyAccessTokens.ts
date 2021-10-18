@@ -44,11 +44,11 @@ export const getSpotifyTokens = async ({
   }
 };
 
-export const createCookie = (tokens: SpotifyAccessToken, context) => {
+export const createCookie = ({ accessToken }: SpotifyAccessToken, context) => {
   context.res.setHeader(
     "Set-Cookie",
-    cookie.serialize("spotifyTokens", JSON.stringify(tokens), {
-      httpOnly: true,
+    cookie.serialize("spotifyAccess", accessToken, {
+      // httpOnly: true,
       secure: process.env.NODE_ENV !== "development",
       maxAge: 3600,
       sameSite: "strict",

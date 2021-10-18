@@ -9,16 +9,17 @@ import { spotify } from "../spotify/spotify";
 import { Box, Text } from "rebass";
 import { TrackList } from "../components/Track-List";
 import theme from "../styles/theme";
+import { useSpotifyPlaybackSDK } from "../hooks/use-spotify-playback-sdk";
 const Home = ({ profile, topTunes }) => {
-  console.log(topTunes);
+  const { SpotifyPlayer } = useSpotifyPlaybackSDK();
+  console.log("PLAYER", SpotifyPlayer);
   return (
     <>
       <Navbar profile={profile} />
       <Box
         sx={{
           paddingX: "10%",
-          marginTop: "65px",
-          paddingTop: "80px",
+          paddingTop: "120px",
           background: "linear-gradient(#181857 , #0A0A0C 30%)",
         }}
       >

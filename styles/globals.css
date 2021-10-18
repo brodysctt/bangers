@@ -70,7 +70,7 @@ code {
 .navbar {
   height: 70px;
   width: 100%;
-  background: #0a0a0c;
+  /* background: #0a0a0c; */
   color: var(--colors-text);
   position: fixed;
   top: 0;
