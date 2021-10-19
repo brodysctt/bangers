@@ -59,8 +59,27 @@ const playTrack = async ({
   }
 };
 
+const createPlaylist = async (accessToken, userId) => {
+  debug();
+  try {
+    const res = await axios.post(
+      `${SPOTIFY_API}/users/${userId}/playlists`,
+      {
+        name: "a-bangin-playlist",
+        public: false,
+        description: "created by BANGERS to share with the homies",
+      },
+      getHeaders(accessToken)
+    );
+    return res.data;
+  } catch (e) {
+    return e;
+  }
+};
+
 export const spotify = {
   getUserProfile,
   getTopMusic,
   playTrack,
+  createPlaylist,
 };
