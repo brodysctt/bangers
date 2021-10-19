@@ -1,15 +1,11 @@
 import { GetServerSideProps } from "next";
-import React from "react";
-import Navbar from "../components/Navbar";
-import {
-  createCookie,
-  getSpotifyTokens,
-} from "../spotify/setSpotifyAccessTokens";
-import { spotify } from "../spotify/spotify";
 import { Box, Text } from "rebass";
-import { TrackList } from "../components/Track-List";
 import theme from "../styles/theme";
+
+import { Navbar, TrackList } from "../components";
+import { spotify, createCookie, getSpotifyTokens } from "@lib/spotify";
 import { useSpotifyPlaybackSDK } from "../hooks/use-spotify-playback-sdk";
+
 const Home = ({ profile, topTunes }) => {
   const { SpotifyPlayer } = useSpotifyPlaybackSDK();
   console.log("PLAYER", SpotifyPlayer);

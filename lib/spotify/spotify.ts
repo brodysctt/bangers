@@ -1,10 +1,9 @@
 import axios from "axios";
-import qs from "qs";
 
-const SPOTIFY_API = "https://api.spotify.com/v1/";
+const SPOTIFY_API = "https://api.spotify.com/v1";
 const getHeaders = (accessToken: string) => ({
   headers: {
-    Authorization: "Bearer " + accessToken,
+    Authorization: `Bearer ${accessToken}`,
   },
 });
 const debug = () => {
@@ -15,7 +14,7 @@ const debug = () => {
 
 const getUserProfile = async (accessToken: string) => {
   debug();
-  const res = await axios.get(SPOTIFY_API + "me", getHeaders(accessToken));
+  const res = await axios.get(`${SPOTIFY_API}/me`, getHeaders(accessToken));
   return res.data;
 };
 
@@ -33,7 +32,7 @@ const getTopMusic = async (
 ) => {
   debug();
   const res = await axios.get(
-    SPOTIFY_API + `me/top/${type}?limit=${limit || "50"}`,
+    `${SPOTIFY_API}/me/top/${type}?limit=${limit || "50"}`,
     getHeaders(accessToken)
   );
 
@@ -50,7 +49,7 @@ const playTrack = async ({
   debug();
   try {
     const res = await axios.put(
-      SPOTIFY_API + `me/player/play`,
+      `${SPOTIFY_API}/me/player/play`,
       { uris: [uri] },
       getHeaders(accessToken)
     );

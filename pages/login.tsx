@@ -9,7 +9,7 @@ const Login = ({ spotifyLogin }) => {
   return null;
 };
 
-export async function getStaticProps(context) {
+export const getStaticProps = async () => {
   return {
     props: {
       spotifyLogin:
@@ -23,6 +23,6 @@ export async function getStaticProps(context) {
         }),
     },
   };
-}
+};
 
 export default Login;

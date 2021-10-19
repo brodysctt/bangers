@@ -1,8 +1,8 @@
-import React from "react";
-import { Box, Image, Text } from "rebass";
-import { spotify } from "../spotify/spotify";
-import theme from "../styles/theme";
 import Cookies from "js-cookie";
+import { Box, Image, Text } from "rebass";
+import theme from "../styles/theme";
+
+import { spotify } from "@lib/spotify";
 
 export const TrackListItem: React.FC<{ song: any; sx?: any }> = ({
   song,
