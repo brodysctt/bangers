@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import { Button } from "rebass";
 import { spotify } from "@lib/spotify";
 
-export const Navbar = ({ profile, topTunes }) => {
+export const Navbar = ({ profile, tracks, homie = false }) => {
   const accessToken = Cookies.get("spotifyAccess");
   console.log(`access token: ${accessToken}`);
   const {
@@ -11,7 +11,6 @@ export const Navbar = ({ profile, topTunes }) => {
     images: [displayPicture],
   } = profile;
 
-  const { items: tracks } = topTunes;
   const trackURIs = tracks.map((track) => track.uri);
 
   return (
@@ -23,18 +22,20 @@ export const Navbar = ({ profile, topTunes }) => {
           </Button>
           <Button
             onClick={async () =>
-              await spotify.createPlaylist(accessToken, id, trackURIs)
+              await spotify.createPlaylist(accessToken, id, trackURIs, homie)
             }
             sx={{ marginLeft: 20 }}
           >
             Turn these tracks into a bangin' playlist
           </Button>
-          <Button
-            onClick={() => Router.push("/homies")}
-            sx={{ marginLeft: 20 }}
-          >
-            What are the homies saying?
-          </Button>
+          {!homie && (
+            <Button
+              onClick={() => Router.push("/homies")}
+              sx={{ marginLeft: 20 }}
+            >
+              What are the homies saying?
+            </Button>
+          )}
         </li>
         {displayPicture && (
           <li>

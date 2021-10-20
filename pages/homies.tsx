@@ -2,27 +2,30 @@ import { GetServerSideProps } from "next";
 import { Box, Text } from "rebass";
 import theme from "../styles/theme";
 
-import { TrackList } from "../components";
+import { Navbar, TrackList } from "../components";
 
 import { db } from "@lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 
 import { spotify } from "@lib/spotify";
 
-const Homies = ({ homieId, homieTracks }) => {
+const Homies = ({ id, homieId, homieTracks }) => {
   return (
-    <Box
-      sx={{
-        paddingX: "10%",
-        paddingTop: "120px",
-        background: "linear-gradient(#181857 , #0A0A0C 30%)",
-      }}
-    >
-      <Text
-        sx={{ ...theme.textStyle.main, fontSize: 40, marginBottom: "40px" }}
-      >{`${homieId}'s Top Songs`}</Text>
-      <TrackList songs={homieTracks} />
-    </Box>
+    <>
+      <Navbar profile={{ id, images: [] }} tracks={homieTracks} homie />
+      <Box
+        sx={{
+          paddingX: "10%",
+          paddingTop: "120px",
+          background: "linear-gradient(#181857 , #0A0A0C 30%)",
+        }}
+      >
+        <Text
+          sx={{ ...theme.textStyle.main, fontSize: 40, marginBottom: "40px" }}
+        >{`${homieId}'s Top Songs`}</Text>
+        <TrackList songs={homieTracks} />
+      </Box>
+    </>
   );
 };
 
@@ -31,6 +34,7 @@ export const getServerSideProps: GetServerSideProps<{}> = async () => {
     const docRefMe = doc(db, "users", "beroyjenkins");
     const docSnapMe = await getDoc(docRefMe);
     const {
+      id,
       tokens: { accessToken },
     } = docSnapMe.data();
 
@@ -46,7 +50,7 @@ export const getServerSideProps: GetServerSideProps<{}> = async () => {
     console.dir(homiePlaylistTracks);
     const homieTracks = homiePlaylistTracks.items.map((item) => item.track);
     return {
-      props: { homieId, homieTracks },
+      props: { id, homieId, homieTracks },
     };
   } catch (e) {
     return {

@@ -83,17 +83,25 @@ const addTracksToPlaylist = async (accessToken, playlistId, uris) => {
   return res.data;
 };
 
-const createPlaylist = async (accessToken, id, trackURIs) => {
+const createPlaylist = async (accessToken, id, trackURIs, homie = false) => {
   debug();
   try {
     console.log(`userId: ${id}`);
     const response: any = await initializePlaylist(accessToken, id);
     const { id: playlistId } = response;
     console.log(`playlistId: ${playlistId}`);
+    await addTracksToPlaylist(accessToken, playlistId, trackURIs);
+
+    // TODO: Check this is actually happening
+    if (homie) {
+      await updateDoc(doc(db, "users", id), {
+        homiePlaylistId: playlistId,
+      });
+      return;
+    }
     await updateDoc(doc(db, "users", id), {
       playlistId,
     });
-    await addTracksToPlaylist(accessToken, playlistId, trackURIs);
   } catch (e) {
     return e;
   }

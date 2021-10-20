@@ -10,9 +10,10 @@ import { doc, setDoc } from "firebase/firestore";
 const Home = ({ profile, topTunes }) => {
   const { SpotifyPlayer } = useSpotifyPlaybackSDK();
   console.log("PLAYER", SpotifyPlayer);
+  const { items: tracks } = topTunes;
   return (
     <>
-      <Navbar profile={profile} topTunes={topTunes} />
+      <Navbar profile={profile} tracks={tracks} />
       <Box
         sx={{
           paddingX: "10%",
