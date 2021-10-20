@@ -9,7 +9,7 @@ import { doc, getDoc } from "firebase/firestore";
 
 import { spotify } from "@lib/spotify";
 
-const Homies = ({ homieId, homieTopTunes }) => {
+const Homies = ({ homieId, homieTracks }) => {
   return (
     <Box
       sx={{
@@ -21,7 +21,7 @@ const Homies = ({ homieId, homieTopTunes }) => {
       <Text
         sx={{ ...theme.textStyle.main, fontSize: 40, marginBottom: "40px" }}
       >{`${homieId}'s Top Songs`}</Text>
-      <TrackList songs={homieTopTunes.items} />
+      <TrackList songs={homieTracks} />
     </Box>
   );
 };
@@ -39,13 +39,14 @@ export const getServerSideProps: GetServerSideProps<{}> = async () => {
     const { id: homieId, playlistId } = docSnapHomie.data();
 
     console.log(`access token for getting homie tracks: ${accessToken}`);
-    const homieTopTunes = await spotify.getPlaylistTracks(
+    const homiePlaylistTracks = await spotify.getPlaylistTracks(
       accessToken,
       playlistId
     );
-    console.dir(homieTopTunes);
+    console.dir(homiePlaylistTracks);
+    const homieTracks = homiePlaylistTracks.items.map((item) => item.track);
     return {
-      props: { homieId, homieTopTunes },
+      props: { homieId, homieTracks },
     };
   } catch (e) {
     return {
