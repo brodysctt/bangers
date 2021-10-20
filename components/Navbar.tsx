@@ -5,6 +5,7 @@ import { spotify } from "@lib/spotify";
 
 export const Navbar = ({ profile, topTunes }) => {
   const accessToken = Cookies.get("spotifyAccess");
+  console.log(`access token: ${accessToken}`);
   const {
     id,
     images: [displayPicture],
@@ -27,6 +28,12 @@ export const Navbar = ({ profile, topTunes }) => {
             sx={{ marginLeft: 20 }}
           >
             Turn these tracks into a bangin' playlist
+          </Button>
+          <Button
+            onClick={() => Router.push("/homies")}
+            sx={{ marginLeft: 20 }}
+          >
+            What are the homies saying?
           </Button>
         </li>
         {displayPicture && (

@@ -49,6 +49,7 @@ export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
     const { id } = profile;
     await setDoc(doc(db, "users", id), {
       id,
+      tokens,
     });
     return {
       props: { profile, topTunes },

@@ -99,9 +99,23 @@ const createPlaylist = async (accessToken, id, trackURIs) => {
   }
 };
 
+const getPlaylistTracks = async (accessToken, playlistId) => {
+  debug();
+  try {
+    const res = await axios.get(
+      `${SPOTIFY_API}/playlists/${playlistId}/tracks`,
+      getHeaders(accessToken)
+    );
+    return res.data;
+  } catch (e) {
+    return e;
+  }
+};
+
 export const spotify = {
   getUserProfile,
   getTopMusic,
   playTrack,
   createPlaylist,
+  getPlaylistTracks,
 };
