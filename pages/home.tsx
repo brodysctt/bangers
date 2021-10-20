@@ -1,17 +1,18 @@
 import { GetServerSideProps } from "next";
 import { Box, Text } from "rebass";
 import theme from "../styles/theme";
-
 import { Navbar, TrackList } from "../components";
 import { spotify, createCookie, getSpotifyTokens } from "@lib/spotify";
 import { useSpotifyPlaybackSDK } from "../hooks/use-spotify-playback-sdk";
+import { db } from "@lib/firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 const Home = ({ profile, topTunes }) => {
   const { SpotifyPlayer } = useSpotifyPlaybackSDK();
   console.log("PLAYER", SpotifyPlayer);
   return (
     <>
-      <Navbar profile={profile} />
+      <Navbar profile={profile} topTunes={topTunes} />
       <Box
         sx={{
           paddingX: "10%",
@@ -38,11 +39,17 @@ export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
 
   try {
     const tokens = await getSpotifyTokens(spotifyParams);
-    const profile = await spotify.getUserProfile(tokens.accessToken);
+    const profile: any = await spotify.getUserProfile(tokens.accessToken);
     const topTunes = await spotify.getTopMusic(tokens.accessToken, {
       type: "tracks",
     });
+
     await createCookie(tokens, context);
+
+    const { id } = profile;
+    await setDoc(doc(db, "users", id), {
+      id,
+    });
     return {
       props: { profile, topTunes },
     };

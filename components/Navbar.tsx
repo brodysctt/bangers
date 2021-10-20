@@ -3,12 +3,16 @@ import Cookies from "js-cookie";
 import { Button } from "rebass";
 import { spotify } from "@lib/spotify";
 
-export const Navbar = ({ profile }) => {
+export const Navbar = ({ profile, topTunes }) => {
   const accessToken = Cookies.get("spotifyAccess");
   const {
-    id: spotifyUserId,
+    id,
     images: [displayPicture],
   } = profile;
+
+  const { items: tracks } = topTunes;
+  const trackURIs = tracks.map((track) => track.uri);
+
   return (
     <nav className="navbar">
       <ul>
@@ -17,14 +21,8 @@ export const Navbar = ({ profile }) => {
             BANGERS
           </Button>
           <Button
-            onClick={
-              async () => {
-                console.log(`spotify token: ${accessToken}`);
-                console.log(`spotify user id: ${spotifyUserId}`);
-                console.log("gonna click");
-                await spotify.createPlaylist(accessToken, spotifyUserId);
-              }
-              // TODO: refacor this into one function that both creates and updates the playlist
+            onClick={async () =>
+              await spotify.createPlaylist(accessToken, id, trackURIs)
             }
             sx={{ marginLeft: 20 }}
           >

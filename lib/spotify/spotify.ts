@@ -1,4 +1,6 @@
 import axios from "axios";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "@lib/firebase";
 
 const SPOTIFY_API = "https://api.spotify.com/v1";
 const getHeaders = (accessToken: string) => ({
@@ -59,19 +61,39 @@ const playTrack = async ({
   }
 };
 
-const createPlaylist = async (accessToken, userId) => {
+const initializePlaylist = async (accessToken, userId) => {
+  const res = await axios.post(
+    `${SPOTIFY_API}/users/${userId}/playlists`,
+    {
+      name: "a-bangin-playlist",
+      public: false,
+      description: "created by BANGERS to share with the homies",
+    },
+    getHeaders(accessToken)
+  );
+  return res.data;
+};
+
+const addTracksToPlaylist = async (accessToken, playlistId, uris) => {
+  const res = await axios.post(
+    `${SPOTIFY_API}/playlists/${playlistId}/tracks`,
+    { uris },
+    getHeaders(accessToken)
+  );
+  return res.data;
+};
+
+const createPlaylist = async (accessToken, id, trackURIs) => {
   debug();
   try {
-    const res = await axios.post(
-      `${SPOTIFY_API}/users/${userId}/playlists`,
-      {
-        name: "a-bangin-playlist",
-        public: false,
-        description: "created by BANGERS to share with the homies",
-      },
-      getHeaders(accessToken)
-    );
-    return res.data;
+    console.log(`userId: ${id}`);
+    const response: any = await initializePlaylist(accessToken, id);
+    const { id: playlistId } = response;
+    console.log(`playlistId: ${playlistId}`);
+    await updateDoc(doc(db, "users", id), {
+      playlistId,
+    });
+    await addTracksToPlaylist(accessToken, playlistId, trackURIs);
   } catch (e) {
     return e;
   }
