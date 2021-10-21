@@ -2,10 +2,9 @@ import { useEffect } from "react";
 import qs from "qs";
 
 const Login = ({ spotifyLogin }) => {
-  console.log(spotifyLogin);
   useEffect(() => {
     window.location.href = spotifyLogin;
-  });
+  }, []);
   return null;
 };
 

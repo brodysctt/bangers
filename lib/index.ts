@@ -1,2 +1,3 @@
 export * from "./spotify";
-export * from "./firebase";
+export * from "./firebase/firebase";
+export * from "./firebase/firestore";
