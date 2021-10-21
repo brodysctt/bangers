@@ -1,40 +1,22 @@
-import Router from "next/router";
-import Cookies from "js-cookie";
+import { useRouter } from "next/router";
+import Link from "next/link";
 import { Button } from "rebass";
-import { spotify } from "@lib/spotify";
 
-export const Navbar = ({ profile, tracks, homie = false }) => {
-  const accessToken = Cookies.get("spotifyAccess");
+export const Navbar = ({ profile }) => {
   const {
-    id,
     images: [displayPicture],
   } = profile;
-  console.log(tracks);
-  // const trackURIs = tracks.map((track) => track.uri);
-
+  const router = useRouter();
   return (
     <nav className="navbar">
       <ul>
         <li>
-          <Button className="btn-logo" onClick={() => Router.push("/")}>
+          <Button className="btn-logo" onClick={() => router.push("/")}>
             BANGERS
           </Button>
-          <Button
-            // onClick={async () =>
-            //   await spotify.createPlaylist(accessToken, id, trackURIs)
-            // }
-            sx={{ marginLeft: 20 }}
-          >
-            Turn these tracks into a bangin' playlist
-          </Button>
-          {!homie && (
-            <Button
-              onClick={() => Router.push("/homies")}
-              sx={{ marginLeft: 20 }}
-            >
-              What are the homies saying?
-            </Button>
-          )}
+          <Link href={"/dmannguy"}>
+            <Button sx={{ marginLeft: 20 }}>Check out duncs profile!!</Button>
+          </Link>
         </li>
         {displayPicture && (
           <li>

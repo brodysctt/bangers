@@ -1,6 +1,4 @@
 import axios from "axios";
-import { doc, updateDoc } from "firebase/firestore";
-import { db } from "@lib/firebase/firebase";
 
 const SPOTIFY_API = "https://api.spotify.com/v1";
 const getHeaders = (accessToken: string) => ({

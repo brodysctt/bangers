@@ -1,29 +1,17 @@
 import { GetServerSideProps } from "next";
-import { Box, Text } from "rebass";
-import theme from "../styles/theme";
-import { Navbar, TrackList } from "../components";
 import { spotify, createCookie, getSpotifyTokens } from "@lib/spotify";
 import { useSpotifyPlaybackSDK } from "../hooks/use-spotify-playback-sdk";
 import { firestore } from "../lib/firebase/firestore";
+import { UserDashboard } from "components/UserDashboard";
 
 const Home = ({ profile, topTunes }) => {
   useSpotifyPlaybackSDK();
   return (
-    <>
-      <Navbar profile={profile} tracks={topTunes} />
-      <Box
-        sx={{
-          paddingX: "10%",
-          paddingTop: "120px",
-          background: "linear-gradient(#181857 , #0A0A0C 30%)",
-        }}
-      >
-        <Text
-          sx={{ ...theme.textStyle.main, fontSize: 40, marginBottom: "40px" }}
-        >{`${profile.display_name}'s Top Songs`}</Text>
-        <TrackList songs={topTunes} />
-      </Box>
-    </>
+    <UserDashboard
+      authProfile={profile}
+      profile={profile}
+      topTunes={topTunes}
+    />
   );
 };
 
