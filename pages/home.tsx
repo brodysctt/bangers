@@ -47,7 +47,7 @@ export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
 
     console.log("WRITING NEW USER DATA");
     await firestore.writeUserData(id, {
-      displayName,
+      ...(displayName ? { displayName } : {}),
       tokens,
     });
 
