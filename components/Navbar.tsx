@@ -5,13 +5,12 @@ import { spotify } from "@lib/spotify";
 
 export const Navbar = ({ profile, tracks, homie = false }) => {
   const accessToken = Cookies.get("spotifyAccess");
-  console.log(`access token: ${accessToken}`);
   const {
     id,
     images: [displayPicture],
   } = profile;
-
-  const trackURIs = tracks.map((track) => track.uri);
+  console.log(tracks);
+  // const trackURIs = tracks.map((track) => track.uri);
 
   return (
     <nav className="navbar">
@@ -21,9 +20,9 @@ export const Navbar = ({ profile, tracks, homie = false }) => {
             BANGERS
           </Button>
           <Button
-            onClick={async () =>
-              await spotify.createPlaylist(accessToken, id, trackURIs, homie)
-            }
+            // onClick={async () =>
+            //   await spotify.createPlaylist(accessToken, id, trackURIs)
+            // }
             sx={{ marginLeft: 20 }}
           >
             Turn these tracks into a bangin' playlist

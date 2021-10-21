@@ -19,31 +19,24 @@ export const TrackListItem: React.FC<{ song: any; sx?: any }> = ({
           alignItems: "center",
         }}
       >
-        <Image
-          src={song.album.images[0].url}
-          sx={{ height: "50px", marginRight: "20px" }}
-        />
+        {song?.album?.images[0]?.url && (
+          <Image
+            src={song.album.images[0].url}
+            sx={{ height: "50px", marginRight: "20px" }}
+          />
+        )}
         <Text
           sx={{
             ...theme.textStyle.main,
             fontSize: 15,
             ":hover": { fontSize: 17, cursor: "pointer" },
           }}
-          onClick={
-            async () => {
-              const play = await spotify.playTrack({
-                accessToken,
-                uri: song.uri,
-              });
-              console.log(play);
-            }
-            //TO-DO: Add logic to open web player if not a premium spotify user
-            // window.open(
-            //   song.external_urls.spotify,
-            //   "_blank",
-            //   "noopener,noreferrer"
-            // )
-          }
+          onClick={async () => {
+            const play = await spotify.playTrack({
+              accessToken,
+              uri: song.uri,
+            });
+          }}
         >
           {song.name}
         </Text>
@@ -66,7 +59,6 @@ export const TrackListItem: React.FC<{ song: any; sx?: any }> = ({
 };
 
 export const TrackList = ({ songs }) => {
-  console.log(songs);
   return (
     <Box sx={{ width: "1000px", display: "flex", flexDirection: "column" }}>
       <Box

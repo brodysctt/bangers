@@ -4,16 +4,13 @@ import theme from "../styles/theme";
 import { Navbar, TrackList } from "../components";
 import { spotify, createCookie, getSpotifyTokens } from "@lib/spotify";
 import { useSpotifyPlaybackSDK } from "../hooks/use-spotify-playback-sdk";
-import { db } from "@lib/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { firestore } from "../lib/firebase/firestore";
 
 const Home = ({ profile, topTunes }) => {
-  const { SpotifyPlayer } = useSpotifyPlaybackSDK();
-  console.log("PLAYER", SpotifyPlayer);
-  const { items: tracks } = topTunes;
+  useSpotifyPlaybackSDK();
   return (
     <>
-      <Navbar profile={profile} tracks={tracks} />
+      <Navbar profile={profile} tracks={topTunes} />
       <Box
         sx={{
           paddingX: "10%",
@@ -24,7 +21,7 @@ const Home = ({ profile, topTunes }) => {
         <Text
           sx={{ ...theme.textStyle.main, fontSize: 40, marginBottom: "40px" }}
         >{`${profile.display_name}'s Top Songs`}</Text>
-        <TrackList songs={topTunes.items} />
+        <TrackList songs={topTunes} />
       </Box>
     </>
   );
@@ -41,19 +38,44 @@ export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
   try {
     const tokens = await getSpotifyTokens(spotifyParams);
     const profile: any = await spotify.getUserProfile(tokens.accessToken);
-    const topTunes = await spotify.getTopMusic(tokens.accessToken, {
+    const { id, display_name: displayName } = profile;
+    await createCookie(tokens, context);
+
+    const userData = await firestore.getUserData(profile.id);
+
+    if (userData) {
+      console.log("GETTING EXISTING DATA");
+      const topTunes = await spotify.getPlaylistTracks(
+        tokens.accessToken,
+        userData.playlistId
+      );
+      return {
+        props: {
+          profile,
+          topTunes: topTunes.items.map((item) => item.track),
+        },
+      };
+    }
+
+    console.log("WRITING NEW USER DATA");
+    await firestore.writeUserData(id, {
+      displayName,
+      tokens,
+    });
+
+    const topTunes: any = await spotify.getTopMusic(tokens.accessToken, {
       type: "tracks",
     });
 
-    await createCookie(tokens, context);
+    const playlist = await spotify.createPlaylist(
+      tokens.accessToken,
+      profile.id,
+      topTunes.items.map((track) => track.uri)
+    );
+    await firestore.updateUserData(id, { playlistId: playlist.id });
 
-    const { id } = profile;
-    await setDoc(doc(db, "users", id), {
-      id,
-      tokens,
-    });
     return {
-      props: { profile, topTunes },
+      props: { profile, topTunes: topTunes.items },
     };
   } catch (e) {
     return {

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { doc, updateDoc } from "firebase/firestore";
-import { db } from "@lib/firebase";
+import { db } from "@lib/firebase/firebase";
 
 const SPOTIFY_API = "https://api.spotify.com/v1";
 const getHeaders = (accessToken: string) => ({
@@ -15,7 +15,6 @@ const debug = () => {
 };
 
 const getUserProfile = async (accessToken: string) => {
-  debug();
   const res = await axios.get(`${SPOTIFY_API}/me`, getHeaders(accessToken));
   return res.data;
 };
@@ -48,7 +47,6 @@ const playTrack = async ({
   accessToken: string;
   uri: string;
 }) => {
-  debug();
   try {
     const res = await axios.put(
       `${SPOTIFY_API}/me/player/play`,
@@ -62,10 +60,11 @@ const playTrack = async ({
 };
 
 const initializePlaylist = async (accessToken, userId) => {
+  debug();
   const res = await axios.post(
     `${SPOTIFY_API}/users/${userId}/playlists`,
     {
-      name: "a-bangin-playlist",
+      name: `${userId}'s Top Tracks'`,
       public: false,
       description: "created by BANGERS to share with the homies",
     },
@@ -75,6 +74,7 @@ const initializePlaylist = async (accessToken, userId) => {
 };
 
 const addTracksToPlaylist = async (accessToken, playlistId, uris) => {
+  debug();
   const res = await axios.post(
     `${SPOTIFY_API}/playlists/${playlistId}/tracks`,
     { uris },
@@ -83,25 +83,13 @@ const addTracksToPlaylist = async (accessToken, playlistId, uris) => {
   return res.data;
 };
 
-const createPlaylist = async (accessToken, id, trackURIs, homie = false) => {
+const createPlaylist = async (accessToken, userId, trackURIs) => {
   debug();
   try {
-    console.log(`userId: ${id}`);
-    const response: any = await initializePlaylist(accessToken, id);
+    const response: any = await initializePlaylist(accessToken, userId);
     const { id: playlistId } = response;
-    console.log(`playlistId: ${playlistId}`);
     await addTracksToPlaylist(accessToken, playlistId, trackURIs);
-
-    // TODO: Check this is actually happening
-    if (homie) {
-      await updateDoc(doc(db, "users", id), {
-        homiePlaylistId: playlistId,
-      });
-      return;
-    }
-    await updateDoc(doc(db, "users", id), {
-      playlistId,
-    });
+    return response;
   } catch (e) {
     return e;
   }
