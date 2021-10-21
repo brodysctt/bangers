@@ -1,33 +1,25 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
-const env = process.env.NEXT_PUBLIC_STAGE;
-const firebaseConfig = {
-  dev: {
-    apiKey: "AIzaSyDFERLvRiszaWxn4CuFh3pxoevFcbAPAJk",
-    authDomain: "bangers-only-dev.firebaseapp.com",
-    projectId: "bangers-only-dev",
-    storageBucket: "bangers-only-dev.appspot.com",
-    messagingSenderId: "977351591933",
-    appId: "1:977351591933:web:129b1329bfd3d302457b94",
-    measurementId: "G-DR1R7LTRZ2",
-  },
-  prod: {
-    apiKey: "AIzaSyDs2-gbC6ZCWZ_ITPHnNt1zCu3Fn9RsH_Q",
-    authDomain: "bangers-only.firebaseapp.com",
-    projectId: "bangers-only",
-    storageBucket: "bangers-only.appspot.com",
-    messagingSenderId: "330296551516",
-    appId: "1:330296551516:web:ed34bffe81fb8b72695e99",
-    measurementId: "G-47ZKJMPMET",
-  },
-};
+const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY;
+const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID;
+const FIREBASE_SENDER_ID = process.env.FIREBASE_SENDER_ID;
+const FIREBASE_APP_ID = process.env.FIREBASE_APP_ID;
+const FIREBASE_MEASUREMENT_ID = process.env.FIREBASE_MEASUREMENT_ID;
 
-const config = firebaseConfig[env];
+const firebaseConfig = {
+  apiKey: FIREBASE_API_KEY,
+  authDomain: `${FIREBASE_PROJECT_ID}.firebaseapp.com`,
+  projectId: FIREBASE_PROJECT_ID,
+  storageBucket: `${FIREBASE_PROJECT_ID}.appspot.com`,
+  messagingSenderId: FIREBASE_SENDER_ID,
+  appId: FIREBASE_APP_ID,
+  measurementId: FIREBASE_MEASUREMENT_ID,
+};
 
 let firebaseApp;
 if (!getApps().length) {
-  firebaseApp = initializeApp(config);
+  firebaseApp = initializeApp(firebaseConfig);
 } else {
   firebaseApp = getApp();
 }
