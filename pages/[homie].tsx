@@ -3,16 +3,14 @@ import { Box, Text } from "rebass";
 import qs from "qs";
 
 import { spotify } from "@lib/spotify";
-import { UserDashboard } from "components/UserDashboard";
+import { UserDashboard, Navbar } from "components";
 import { firestore } from "@lib/firebase";
 
 const Homies = ({ authProfile, homieProfile, homieTopTunes }) => {
   return homieProfile && homieTopTunes ? (
-    <UserDashboard
-      authProfile={authProfile}
-      profile={homieProfile}
-      topTunes={homieTopTunes}
-    />
+    <UserDashboard profile={homieProfile} topTunes={homieTopTunes}>
+      <Navbar profile={authProfile} />
+    </UserDashboard>
   ) : (
     <Box
       sx={{
@@ -34,8 +32,18 @@ export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
     const authProfile: Record<any, any> = await spotify.getUserProfile(
       accessToken
     );
-    const homieId = context.resolvedUrl.replace("/", "");
-    const homie = await firestore.getUserData(homieId);
+    console.log("here be the context object:");
+    console.dir(context);
+    const {
+      params: { homie: homieId },
+    } = context;
+
+    console.log(`here be homieId: ${homieId}`);
+
+    const homie = await firestore.getUserData(homieId as string);
+
+    console.log(`here be result of firestore homie call:`);
+    console.dir(homie);
 
     if (!homie) {
       return { props: {} };

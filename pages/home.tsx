@@ -2,16 +2,14 @@ import { GetServerSideProps } from "next";
 import { spotify, createCookie, getSpotifyTokens } from "@lib/spotify";
 import { useSpotifyPlaybackSDK } from "../hooks/use-spotify-playback-sdk";
 import { firestore } from "../lib/firebase/firestore";
-import { UserDashboard } from "components/UserDashboard";
+import { UserDashboard, Navbar } from "components";
 
 const Home = ({ profile, topTunes }) => {
   useSpotifyPlaybackSDK();
   return (
-    <UserDashboard
-      authProfile={profile}
-      profile={profile}
-      topTunes={topTunes}
-    />
+    <UserDashboard profile={profile} topTunes={topTunes}>
+      <Navbar profile={profile} />
+    </UserDashboard>
   );
 };
 

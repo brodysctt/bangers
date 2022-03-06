@@ -1,23 +1,23 @@
-import { Navbar, TrackList } from "components";
 import React from "react";
-import { Box, Text } from "rebass";
 import theme from "styles/theme";
+import { Box, Text } from "rebass";
+import { TrackList } from "components";
 
 interface IUserDashboard {
   profile: any;
-  authProfile: any;
   topTunes: any[];
 }
 
 export const UserDashboard: React.FC<IUserDashboard> = ({
   profile,
   topTunes,
-  authProfile,
+  children,
 }) => {
-  const { id } = profile;
+  // const { display_name } = profile
+  const { displayName } = profile;
   return (
     <>
-      <Navbar profile={authProfile} />
+      {children}
       <Box
         sx={{
           paddingX: "10%",
@@ -27,7 +27,7 @@ export const UserDashboard: React.FC<IUserDashboard> = ({
       >
         <Text
           sx={{ ...theme.textStyle.main, fontSize: 40, marginBottom: "40px" }}
-        >{`${id}'s Top Songs`}</Text>
+        >{`${displayName}'s Top Songs`}</Text>
         <TrackList songs={topTunes} />
       </Box>
     </>
