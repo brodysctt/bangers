@@ -2,13 +2,19 @@ import { GetServerSideProps } from "next";
 import { Box, Text } from "rebass";
 import qs from "qs";
 
-import { spotifyApi } from "@lib/spotify";
+import { spotify } from "@lib/spotify";
 import { UserDashboard, Navbar } from "components";
 import { firestore } from "@lib/firebase";
 
-const Homies = ({ authProfile, homieProfile, homieTopTunes }) =>
-  homieProfile && homieTopTunes ? (
-    <UserDashboard profile={homieProfile} topTunes={homieTopTunes}>
+interface IHomies {
+  authProfile: SpotifyApi.CurrentUsersProfileResponse;
+  displayName: string;
+  topTunes: SpotifyApi.TrackObjectFull[];
+}
+
+const Homies = ({ authProfile, displayName, topTunes }: IHomies) =>
+  displayName && topTunes ? (
+    <UserDashboard {...{ displayName, topTunes }}>
       <Navbar profile={authProfile} />
     </UserDashboard>
   ) : (
@@ -28,9 +34,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const cookie = context.req.cookies;
     const accessToken = qs.parse(cookie).spotifyAccess as string;
-    spotifyApi.setAccessToken(accessToken);
+    spotify.setAccessToken(accessToken);
 
-    const { body: authProfile } = await spotifyApi.getMe();
+    const { body: authProfile } = await spotify.getMe();
 
     const {
       params: { homie: homieId },
@@ -47,13 +53,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       body: {
         tracks: { items },
       },
-    } = await spotifyApi.getPlaylist(playlistId);
+    } = await spotify.getPlaylist(playlistId);
 
     return {
       props: {
-        homieProfile: { id: homieId, playlistId, displayName },
-        homieTopTunes: items.map(({ track }) => track),
         authProfile,
+        displayName,
+        topTunes: items.map(({ track }) => track),
       },
     };
   } catch (e) {
