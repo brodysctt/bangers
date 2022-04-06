@@ -3,16 +3,20 @@ import { Box, Text } from "rebass";
 import qs from "qs";
 
 import { spotify } from "@lib/spotify";
-import { UserDashboard } from "components/UserDashboard";
+import { UserDashboard, Navbar } from "components";
 import { firestore } from "@lib/firebase";
 
-const Homies = ({ authProfile, homieProfile, homieTopTunes }) => {
-  return homieProfile && homieTopTunes ? (
-    <UserDashboard
-      authProfile={authProfile}
-      profile={homieProfile}
-      topTunes={homieTopTunes}
-    />
+interface IHomies {
+  authProfile: SpotifyApi.CurrentUsersProfileResponse;
+  displayName: string;
+  topTunes: SpotifyApi.TrackObjectFull[];
+}
+
+const Homies = ({ authProfile, displayName, topTunes }: IHomies) =>
+  displayName && topTunes ? (
+    <UserDashboard {...{ displayName, topTunes }}>
+      <Navbar profile={authProfile} />
+    </UserDashboard>
   ) : (
     <Box
       sx={{
@@ -25,33 +29,37 @@ const Homies = ({ authProfile, homieProfile, homieTopTunes }) => {
       <Text sx={{ color: "white" }}>Homie not found!!</Text>
     </Box>
   );
-};
 
-export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const cookie = context.req.cookies;
     const accessToken = qs.parse(cookie).spotifyAccess as string;
-    const authProfile: Record<any, any> = await spotify.getUserProfile(
-      accessToken
-    );
-    const homieId = context.resolvedUrl.replace("/", "");
-    const homie = await firestore.getUserData(homieId);
+    spotify.setAccessToken(accessToken);
+
+    const { body: authProfile } = await spotify.getMe();
+
+    const {
+      params: { homie: homieId },
+    } = context;
+
+    const homie = await firestore.getUserData(homieId as string);
 
     if (!homie) {
       return { props: {} };
     }
 
     const { playlistId, displayName } = homie;
-    const homiePlaylistTracks = await spotify.getPlaylistTracks(
-      accessToken,
-      playlistId
-    );
-    const homieTopTunes = homiePlaylistTracks.items.map((item) => item.track);
+    const {
+      body: {
+        tracks: { items },
+      },
+    } = await spotify.getPlaylist(playlistId);
+
     return {
       props: {
-        homieProfile: { id: homieId, playlistId, displayName },
-        homieTopTunes,
-        authProfile: { ...authProfile, displayName: authProfile.display_name },
+        authProfile,
+        displayName,
+        topTunes: items.map(({ track }) => track),
       },
     };
   } catch (e) {

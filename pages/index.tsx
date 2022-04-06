@@ -21,7 +21,7 @@ const LandingPage = () => (
         fontFamily: "Poppins",
       }}
     >
-      🤘 Bangers Only 🤘
+      Bangers 🤘
     </Text>
 
     <Text sx={{ color: "white", textAlign: "center" }}>

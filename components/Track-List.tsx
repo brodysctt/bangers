@@ -1,7 +1,6 @@
-import Cookies from "js-cookie";
-import { Box, Image, Text } from "rebass";
 import theme from "../styles/theme";
-
+import { Box, Image, Text } from "rebass";
+import Cookies from "js-cookie";
 import { spotify } from "@lib/spotify";
 
 export const TrackListItem: React.FC<{ song: any; sx?: any }> = ({
@@ -32,9 +31,9 @@ export const TrackListItem: React.FC<{ song: any; sx?: any }> = ({
             ":hover": { fontSize: 17, cursor: "pointer" },
           }}
           onClick={async () => {
-            const play = await spotify.playTrack({
-              accessToken,
-              uri: song.uri,
+            spotify.setAccessToken(accessToken);
+            await spotify.play({
+              uris: [song.uri],
             });
           }}
         >

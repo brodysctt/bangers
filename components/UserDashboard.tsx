@@ -1,35 +1,31 @@
-import { Navbar, TrackList } from "components";
 import React from "react";
-import { Box, Text } from "rebass";
 import theme from "styles/theme";
+import { Box, Text } from "rebass";
+import { TrackList } from "components";
 
 interface IUserDashboard {
-  profile: any;
-  authProfile: any;
-  topTunes: any[];
+  displayName: string;
+  topTunes: SpotifyApi.TrackObjectFull[];
 }
 
 export const UserDashboard: React.FC<IUserDashboard> = ({
-  profile,
+  displayName,
   topTunes,
-  authProfile,
-}) => {
-  const { id } = profile;
-  return (
-    <>
-      <Navbar profile={authProfile} />
-      <Box
-        sx={{
-          paddingX: "10%",
-          paddingTop: "120px",
-          background: "linear-gradient(#181857 , #0A0A0C 30%)",
-        }}
-      >
-        <Text
-          sx={{ ...theme.textStyle.main, fontSize: 40, marginBottom: "40px" }}
-        >{`${id}'s Top Songs`}</Text>
-        <TrackList songs={topTunes} />
-      </Box>
-    </>
-  );
-};
+  children,
+}) => (
+  <>
+    {children}
+    <Box
+      sx={{
+        paddingX: "10%",
+        paddingTop: "120px",
+        background: "linear-gradient(#181857 , #0A0A0C 30%)",
+      }}
+    >
+      <Text
+        sx={{ ...theme.textStyle.main, fontSize: 40, marginBottom: "40px" }}
+      >{`${displayName}'s Top Songs`}</Text>
+      <TrackList songs={topTunes} />
+    </Box>
+  </>
+);
